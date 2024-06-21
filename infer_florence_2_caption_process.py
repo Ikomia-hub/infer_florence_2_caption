@@ -197,6 +197,8 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         # Code source repository
         self.info.repository = "https://github.com/Ikomia-hub/infer_florence_2_caption"
         self.info.original_repository = "https://github.com/googleapis/python-vision"
+        # Python version
+        self.info.min_python_version = "3.10.0"
         # Keywords used for search
         self.info.keywords = "Florence,Microsoft,Captioning,Unified,Pytorch"
         self.info.algo_type = core.AlgoType.INFER
