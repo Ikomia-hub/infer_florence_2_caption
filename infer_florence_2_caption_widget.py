@@ -82,7 +82,7 @@ class InferFlorence2CaptionWidget(core.CWorkflowTaskWidget):
         self.parameters.model_name = self.combo_model.currentText()
         self.parameters.task_prompt = self.combo_task_prompt.currentText()
         self.parameters.max_new_tokens = self.spin_max_new_tokens.value()
-        self.parameters.spin_num_beams = self.spin_spin_num_beams.value()
+        self.parameters.num_beams = self.spin_num_beams.value()
         self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.do_sample = self.check_do_sample.isChecked()
         self.parameters.early_stopping = self.check_early_stopping.isChecked()
