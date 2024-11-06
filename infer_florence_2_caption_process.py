@@ -24,7 +24,8 @@ class InferFlorence2CaptionParam(core.CWorkflowTaskParam):
 
     def set_values(self, params):
         # Set parameters values from Ikomia Studio or API
-        self.update = utils.strtobool(params["cuda"]) != self.cuda or self.model_name != str(params["model_name"])
+        self.update = utils.strtobool(
+            params["cuda"]) != self.cuda or self.model_name != str(params["model_name"])
         self.model_name = str(params["model_name"])
         self.task_prompt = str(params["task_prompt"])
         self.max_new_tokens = int(params["max_new_tokens"])
@@ -68,7 +69,8 @@ class InferFlorence2Caption(core.CWorkflowTask):
 
         self.processor = None
         self.model = None
-        self.model_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weights")
+        self.model_folder = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "weights")
         self.device = torch.device("cpu")
 
     def get_progress_steps(self):
@@ -79,58 +81,60 @@ class InferFlorence2Caption(core.CWorkflowTask):
     def load_model(self, param):
         try:
             self.processor = AutoProcessor.from_pretrained(
-                                    param.model_name,
-                                    cache_dir=self.model_folder,
-                                    local_files_only=True,
-                                    trust_remote_code=True
-                                    )
+                param.model_name,
+                cache_dir=self.model_folder,
+                local_files_only=True,
+                trust_remote_code=True
+            )
 
             self.model = AutoModelForCausalLM.from_pretrained(
-                                    param.model_name,
-                                    cache_dir=self.model_folder,
-                                    local_files_only=True,
-                                    trust_remote_code=True
-                                    ).eval()
+                param.model_name,
+                cache_dir=self.model_folder,
+                local_files_only=True,
+                trust_remote_code=True
+            ).eval()
 
         except Exception as e:
-            print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+            print(
+                f"Failed with error: {e}. Trying without the local_files_only parameter...")
             self.processor = AutoProcessor.from_pretrained(
-                                        param.model_name,
-                                        cache_dir=self.model_folder,
-                                        trust_remote_code=True
-                                        )
+                param.model_name,
+                cache_dir=self.model_folder,
+                trust_remote_code=True
+            )
 
             self.model = AutoModelForCausalLM.from_pretrained(
-                                    param.model_name,
-                                    cache_dir=self.model_folder,
-                                    trust_remote_code=True
-                                    ).eval()
+                param.model_name,
+                cache_dir=self.model_folder,
+                trust_remote_code=True
+            ).eval()
         self.model.to(self.device)
 
     def infer(self, task_prompt, img, param):
         # Image pre-process
         img_h, img_w = img.shape[:2]
         prompt = task_prompt
-        inputs = self.processor(text=prompt, images=img, return_tensors="pt").to(self.device)
+        inputs = self.processor(text=prompt, images=img,
+                                return_tensors="pt").to(self.device)
 
         # Inference
         generated_ids = self.model.generate(
-                                    input_ids=inputs["input_ids"],
-                                    pixel_values=inputs["pixel_values"],
-                                    max_new_tokens=param.max_new_tokens,
-                                    early_stopping=param.early_stopping,
-                                    do_sample=param.do_sample,
-                                    num_beams=param.num_beams,
-                                    )
+            input_ids=inputs["input_ids"],
+            pixel_values=inputs["pixel_values"],
+            max_new_tokens=param.max_new_tokens,
+            early_stopping=param.early_stopping,
+            do_sample=param.do_sample,
+            num_beams=param.num_beams,
+        )
         generated_text = self.processor.batch_decode(
-                                            generated_ids,
-                                            skip_special_tokens=False
-                                            )[0]
+            generated_ids,
+            skip_special_tokens=False
+        )[0]
         parsed_answer = self.processor.post_process_generation(
-                                            generated_text,
-                                            task=task_prompt,
-                                            image_size=(img_w, img_h)
-                                            )
+            generated_text,
+            task=task_prompt,
+            image_size=(img_w, img_h)
+        )
 
         return parsed_answer
 
@@ -202,7 +206,7 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         # Keywords used for search
         self.info.keywords = "Florence,Microsoft,Captioning,Unified,Pytorch"
         self.info.algo_type = core.AlgoType.INFER
-        self.info.algo_tasks = "OTHER"
+        self.info.algo_tasks = "IMAGE_CAPTIONING"
         self.info.os = utils.OSType.LINUX
 
     def create(self, param=None):
