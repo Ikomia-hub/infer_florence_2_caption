@@ -207,7 +207,7 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         # Keywords used for search
         self.info.keywords = "Florence,Microsoft,Captioning,Unified,Pytorch"
         self.info.algo_type = core.AlgoType.INFER
-        self.info.algo_tasks = "OTHER"
+        self.info.algo_tasks = "IMAGE_CAPTIONING"
         self.info.os = utils.OSType.LINUX
 
     def create(self, param=None):
