@@ -207,7 +207,7 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         self.info.short_description = "Image captioning with Florence-2"
         # relative path -> as displayed in Ikomia Studio algorithm tree
         self.info.path = "Plugins/Python/Caption"
-        self.info.version = "2.0.0"
+        self.info.version = "2.1.0"
         self.info.icon_path = "images/icon.png"
         self.info.authors = "B. Xiao, H. Wu, W. Xu, X. Dai, H. Hu, Y. Lu, M. Zeng, C. Liu, L. Yuan"
         self.info.article = "Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks"
