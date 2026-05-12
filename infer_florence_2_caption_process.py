@@ -3,6 +3,7 @@ import torch
 import os
 from unittest.mock import patch
 from ikomia import core, dataprocess, utils
+from ikomia.dataprocess.datadictIO import DataDictIO
 from transformers import AutoProcessor, AutoModelForCausalLM
 from transformers.dynamic_module_utils import get_imports
 
@@ -61,7 +62,7 @@ class InferFlorence2Caption(core.CWorkflowTask):
         core.CWorkflowTask.__init__(self, name)
         # Add input/output of the algorithm here
         self.add_input(dataprocess.CImageIO())
-        self.add_output(dataprocess.DataDictIO())
+        self.add_output(DataDictIO())
 
         # Create parameters object
         if param is None:
