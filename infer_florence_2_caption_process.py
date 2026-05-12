@@ -1,8 +1,10 @@
 import copy
 import torch
 import os
+from unittest.mock import patch
 from ikomia import core, dataprocess, utils
 from transformers import AutoProcessor, AutoModelForCausalLM
+from transformers.dynamic_module_utils import get_imports
 
 
 # --------------------
@@ -78,6 +80,16 @@ class InferFlorence2Caption(core.CWorkflowTask):
         # This is handled by the main progress bar of Ikomia Studio
         return 1
 
+    @staticmethod
+    def fixed_get_imports(filename):
+        if not str(filename).endswith("modeling_florence2.py"):
+            return get_imports(filename)
+
+        imports = get_imports(filename)
+        if "flash_attn" in imports:
+            imports.remove("flash_attn")
+        return imports
+
     def load_model(self, param):
         try:
             self.processor = AutoProcessor.from_pretrained(
@@ -87,12 +99,14 @@ class InferFlorence2Caption(core.CWorkflowTask):
                 trust_remote_code=True
             )
 
-            self.model = AutoModelForCausalLM.from_pretrained(
-                param.model_name,
-                cache_dir=self.model_folder,
-                local_files_only=True,
-                trust_remote_code=True
-            ).eval()
+            with patch("transformers.dynamic_module_utils.get_imports", self.fixed_get_imports):
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    param.model_name,
+                    cache_dir=self.model_folder,
+                    local_files_only=True,
+                    trust_remote_code=True,
+                    attn_implementation="sdpa"
+                ).eval()
 
         except Exception as e:
             print(
@@ -103,11 +117,13 @@ class InferFlorence2Caption(core.CWorkflowTask):
                 trust_remote_code=True
             )
 
-            self.model = AutoModelForCausalLM.from_pretrained(
-                param.model_name,
-                cache_dir=self.model_folder,
-                trust_remote_code=True
-            ).eval()
+            with patch("transformers.dynamic_module_utils.get_imports", self.fixed_get_imports):
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    param.model_name,
+                    cache_dir=self.model_folder,
+                    trust_remote_code=True,
+                    attn_implementation="sdpa"
+                ).eval()
         self.model.to(self.device)
 
     def infer(self, task_prompt, img, param):
@@ -191,7 +207,7 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         self.info.short_description = "Image captioning with Florence-2"
         # relative path -> as displayed in Ikomia Studio algorithm tree
         self.info.path = "Plugins/Python/Caption"
-        self.info.version = "2.0.0"
+        self.info.version = "2.1.0"
         self.info.icon_path = "images/icon.png"
         self.info.authors = "B. Xiao, H. Wu, W. Xu, X. Dai, H. Hu, Y. Lu, M. Zeng, C. Liu, L. Yuan"
         self.info.article = "Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks"
