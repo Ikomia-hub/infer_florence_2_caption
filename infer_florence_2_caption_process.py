@@ -220,6 +220,7 @@ class InferFlorence2CaptionFactory(dataprocess.CTaskFactory):
         self.info.original_repository = "https://github.com/googleapis/python-vision"
         # Python version
         self.info.min_python_version = "3.11.0"
+        self.info.max_python_version = "3.12.0"
         self.info.min_ikomia_version = "0.15.0"
         # Keywords used for search
         self.info.keywords = "Florence,Microsoft,Captioning,Unified,Pytorch"
