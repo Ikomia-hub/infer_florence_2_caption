@@ -3,8 +3,8 @@ from ikomia.utils import pyqtutils, qtconversion
 from infer_florence_2_caption.infer_florence_2_caption_process import InferFlorence2CaptionParam
 
 # PyQt GUI framework
-from PyQt5.QtWidgets import *
-from torch.cuda import is_available 
+from PyQt6.QtWidgets import *
+from torch.cuda import is_available
 
 
 # --------------------
@@ -35,13 +35,12 @@ class InferFlorence2CaptionWidget(core.CWorkflowTaskWidget):
         # Model name
         self.combo_model = pyqtutils.append_combo(
             self.grid_layout, "Model name")
-        self.combo_model.addItem("microsoft/Florence-2-base")
-        self.combo_model.addItem("microsoft/Florence-2-large")
-        self.combo_model.addItem("microsoft/Florence-2-base-ft")
-        self.combo_model.addItem("microsoft/Florence-2-large-ft")
+        self.combo_model.addItem("florence-community/Florence-2-base")
+        self.combo_model.addItem("florence-community/Florence-2-large")
+        self.combo_model.addItem("florence-community/Florence-2-base-ft")
+        self.combo_model.addItem("florence-community/Florence-2-large-ft")
 
         self.combo_model.setCurrentText(self.parameters.model_name)
-
 
         # Task Prompt
         self.combo_task_prompt = pyqtutils.append_combo(
@@ -54,16 +53,16 @@ class InferFlorence2CaptionWidget(core.CWorkflowTaskWidget):
 
         # Max new tokens
         self.spin_max_new_tokens = pyqtutils.append_spin(
-                                            self.grid_layout,
-                                            "Max tokens",
-                                            self.parameters.max_new_tokens
+            self.grid_layout,
+            "Max tokens",
+            self.parameters.max_new_tokens
         )
 
         # New beams
         self.spin_num_beams = pyqtutils.append_spin(
-                                            self.grid_layout,
-                                            "Number of beams",
-                                            self.parameters.num_beams
+            self.grid_layout,
+            "Number of beams",
+            self.parameters.num_beams
         )
 
         # Do sample
