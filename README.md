@@ -63,10 +63,10 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 - For additional guidance on getting started with Ikomia Studio, check out [this blog post](https://www.ikomia.ai/blog/how-to-get-started-with-ikomia-studio).
 
 ## :pencil: Set algorithm parameters
-- **model_name** (str) - default 'microsoft/Florence-2-base': Name of the Florence-2 pre-trained model. Other models available:
-    - microsoft/Florence-2-large
-    - microsoft/Florence-2-base-ft
-    - microsoft/Florence-2-large-ft
+- **model_name** (str) - default 'florence-community/Florence-2-base': Name of the Florence-2 pre-trained model. Other models available:
+    - florence-community/Florence-2-large
+    - florence-community/Florence-2-base-ft
+    - florence-community/Florence-2-large-ft
 - **task_prompt** (str) - default 'MORE_DETAILED_CAPTION': Level of detail of the captioning. Other levels available:
     - CAPTION
     - DETAILED_CAPTION
@@ -89,7 +89,7 @@ wf = Workflow()
 algo = wf.add_task(name="infer_florence_2_caption", auto_connect=True)
 
 algo.set_parameters({
-    "model_name":"microsoft/Florence-2-large",
+    "model_name":"florence-community/Florence-2-large",
     "task_prompt":"MORE_DETAILED_CAPTION",
     "max_new_tokens":"1024",
     "num_beams":"3",
